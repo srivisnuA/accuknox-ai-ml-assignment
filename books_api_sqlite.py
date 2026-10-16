@@ -19,12 +19,18 @@ def fetch_books(query: str, limit: int = 10, timeout: int = 15) -> list[dict[str
     }, timeout=timeout)
     response.raise_for_status()
     payload = response.json()
+    if not isinstance(payload, dict) or not isinstance(payload.get("docs"), list):
+        raise ValueError("Unexpected books API response format")
     books = []
-    for doc in payload.get("docs", []):
+    for doc in payload["docs"]:
+        if not isinstance(doc, dict):
+            continue
         title = (doc.get("title") or "").strip()
         if not title:
             continue
         authors = doc.get("author_name") or []
+        if not isinstance(authors, list):
+            authors = []
         books.append({
             "book_key": doc.get("key") or f"title:{title.lower()}",
             "title": title,
