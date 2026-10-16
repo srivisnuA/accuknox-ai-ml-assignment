@@ -2,6 +2,7 @@
 from __future__ import annotations
 import argparse
 import json
+import math
 from pathlib import Path
 from statistics import mean
 from typing import Any
@@ -25,7 +26,7 @@ def fetch_students(api_url: str, timeout: int = 10) -> list[dict[str, Any]]:
             score = float(item["score"])
         except (TypeError, ValueError) as exc:
             raise ValueError(f"Student record {index} has a non-numeric score") from exc
-        if not 0 <= score <= 100:
+        if not math.isfinite(score) or not 0 <= score <= 100:
             raise ValueError(f"Student record {index} score must be between 0 and 100")
         validated.append({"student": str(item.get("student", f"Student {index+1}")), "score": score})
     if not validated:
