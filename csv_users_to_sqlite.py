@@ -30,15 +30,20 @@ def import_users(csv_path: str | Path, db_path: str | Path) -> dict[str, int]:
         headers = {header.strip().lower() for header in (reader.fieldnames or [])}
         if not {"name", "email"}.issubset(headers):
             raise ValueError("CSV must contain 'name' and 'email' columns")
-        for row_number, raw_row in enumerate(reader, start=2):
-            row = {(key or "").strip().lower(): (value or "").strip()
-                   for key, value in raw_row.items()}
-            name, email = row.get("name", ""), row.get("email", "")
-            if not name or not EMAIL_RE.fullmatch(email):
-                skipped += 1
-                print(f"Skipping CSV row {row_number}: missing name or invalid email")
-                continue
-            with sqlite3.connect(db_path) as conn:
+        # One transaction avoids opening a new SQLite connection for every CSV row.
+        with sqlite3.connect(db_path) as conn:
+            for row_number, raw_row in enumerate(reader, start=2):
+                if None in raw_row or any(value is None for value in raw_row.values()):
+                    skipped += 1
+                    print(f"Skipping malformed CSV row {row_number}")
+                    continue
+                row = {key.strip().lower(): value.strip()
+                       for key, value in raw_row.items()}
+                name, email = row.get("name", ""), row.get("email", "")
+                if not name or not EMAIL_RE.fullmatch(email):
+                    skipped += 1
+                    print(f"Skipping CSV row {row_number}: missing name or invalid email")
+                    continue
                 exists = conn.execute(
                     "SELECT 1 FROM users WHERE email = ? COLLATE NOCASE", (email,)
                 ).fetchone()
@@ -47,8 +52,10 @@ def import_users(csv_path: str | Path, db_path: str | Path) -> dict[str, int]:
                     ON CONFLICT(email) DO UPDATE SET
                       name = excluded.name, imported_at = CURRENT_TIMESTAMP
                 """, (name, email))
-                if exists: updated += 1
-                else: inserted += 1
+                if exists:
+                    updated += 1
+                else:
+                    inserted += 1
     return {"inserted": inserted, "updated": updated, "skipped": skipped}
 
 def list_users(db_path: str | Path) -> list[tuple]:
