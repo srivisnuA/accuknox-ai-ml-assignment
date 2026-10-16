@@ -35,6 +35,28 @@ class AssignmentTests(unittest.TestCase):
         chart = self.root / "scores.png"
         self.assertEqual(create_chart(students, chart), 90)
         self.assertTrue(chart.exists())
+    @patch("student_scores_api.requests.get")
+    def test_invalid_student_scores(self, mock_get):
+        response = Mock()
+        response.json.return_value = {"students": [{"student": "A", "score": "nan"}]}
+        mock_get.return_value = response
+        with self.assertRaises(ValueError):
+            fetch_students("http://example.test/students")
+
+    @patch("books_api_sqlite.requests.get")
+    def test_invalid_books_payload(self, mock_get):
+        response = Mock()
+        response.json.return_value = {"docs": "not-a-list"}
+        mock_get.return_value = response
+        with self.assertRaises(ValueError):
+            fetch_books("example")
+
+    def test_csv_malformed_rows(self):
+        path = self.root / "malformed.csv"
+        path.write_text("name,email\\nAsha,asha@example.com,extra\\nBala\\n", encoding="utf-8")
+        db = self.root / "malformed.db"
+        self.assertEqual(import_users(path, db), {"inserted": 0, "updated": 0, "skipped": 2})
+
     def test_csv_import_and_duplicate_update(self):
         path = self.root / "users.csv"
         path.write_text("name,email\nAsha,asha@example.com\nBad,not-an-email\n", encoding="utf-8")
