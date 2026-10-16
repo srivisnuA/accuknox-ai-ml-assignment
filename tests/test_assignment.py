@@ -2,16 +2,20 @@ import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import Mock, patch
-from books_api_sqlite import fetch_books, save_books, read_books
-from student_scores_api import fetch_students, create_chart
+from books_api_sqlite import fetch_books, read_books, save_books
+from student_scores_api import create_chart, fetch_students
 from csv_users_to_sqlite import import_users, list_users
+
+
 
 class AssignmentTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.root = Path(self.temp.name)
+
     def tearDown(self):
         self.temp.cleanup()
+
     @patch("books_api_sqlite.requests.get")
     def test_book_api_and_sqlite(self, mock_get):
         response = Mock()
@@ -24,6 +28,7 @@ class AssignmentTests(unittest.TestCase):
         db = self.root / "books.db"
         self.assertEqual(save_books(db, books), 1)
         self.assertEqual(read_books(db)[0][0], "Example Book")
+
     @patch("student_scores_api.requests.get")
     def test_student_average_and_chart(self, mock_get):
         response = Mock()
@@ -51,11 +56,13 @@ class AssignmentTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             fetch_books("example")
 
+
     def test_csv_malformed_rows(self):
         path = self.root / "malformed.csv"
-        path.write_text("name,email\\nAsha,asha@example.com,extra\\nBala\\n", encoding="utf-8")
+        path.write_text("name,email\nAsha,asha@example.com,extra\nBala\n", encoding="utf-8")
         db = self.root / "malformed.db"
         self.assertEqual(import_users(path, db), {"inserted": 0, "updated": 0, "skipped": 2})
+
 
     def test_csv_import_and_duplicate_update(self):
         path = self.root / "users.csv"
