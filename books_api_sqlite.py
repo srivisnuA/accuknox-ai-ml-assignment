@@ -25,17 +25,24 @@ def fetch_books(query: str, limit: int = 10, timeout: int = 15) -> list[dict[str
     for doc in payload["docs"]:
         if not isinstance(doc, dict):
             continue
-        title = (doc.get("title") or "").strip()
+        raw_title = doc.get("title")
+        title = raw_title.strip() if isinstance(raw_title, str) else ""
         if not title:
             continue
         authors = doc.get("author_name") or []
         if not isinstance(authors, list):
             authors = []
+        authors = [author.strip() for author in authors if isinstance(author, str) and author.strip()]
+        year = doc.get("first_publish_year")
+        if isinstance(year, bool) or not isinstance(year, int) or not 0 < year <= 9999:
+            year = None
+        raw_key = doc.get("key")
+        book_key = raw_key.strip() if isinstance(raw_key, str) and raw_key.strip() else f"title:{title.casefold()}"
         books.append({
-            "book_key": doc.get("key") or f"title:{title.lower()}",
+            "book_key": book_key,
             "title": title,
             "author": ", ".join(authors) if authors else "Unknown",
-            "publication_year": doc.get("first_publish_year"),
+            "publication_year": year,
         })
     return books
 
