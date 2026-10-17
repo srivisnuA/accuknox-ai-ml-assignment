@@ -27,7 +27,9 @@ def import_users(csv_path: str | Path, db_path: str | Path) -> dict[str, int]:
     inserted = updated = skipped = 0
     with path.open("r", newline="", encoding="utf-8-sig") as handle:
         reader = csv.DictReader(handle)
-        headers = {header.strip().lower() for header in (reader.fieldnames or [])}
+        headers = {header.strip().lower() for header in (reader.fieldnames or []) if isinstance(header, str)}
+        if len(headers) != len(reader.fieldnames or []):
+            raise ValueError("CSV contains duplicate or empty column names")
         if not {"name", "email"}.issubset(headers):
             raise ValueError("CSV must contain 'name' and 'email' columns")
         # One transaction avoids opening a new SQLite connection for every CSV row.
