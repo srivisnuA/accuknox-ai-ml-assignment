@@ -23,6 +23,8 @@ def fetch_students(api_url: str, timeout: int = 10) -> list[dict[str, Any]]:
         if not isinstance(item, dict) or "score" not in item:
             raise ValueError(f"Student record {index} must contain a score")
         try:
+            if isinstance(item["score"], bool):
+                raise ValueError("Boolean scores are not allowed")
             score = float(item["score"])
         except (TypeError, ValueError) as exc:
             raise ValueError(f"Student record {index} has a non-numeric score") from exc
