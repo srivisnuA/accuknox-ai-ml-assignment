@@ -1,6 +1,24 @@
 # Submission notes — personalize before sending
 
-The recruiter explicitly warns against copied AI responses. Use these notes to prepare, verify claims about your own work, and rewrite answers in your own voice. Do not claim contributions you cannot explain.
+The original problem statement explicitly prohibits copying and ChatGPT use. This
+repository includes AI-assisted changes and these are preparation notes, not a compliant
+independently authored submission. Rewording AI output does not establish compliance.
+Confirm the recruiter's allowed-assistance rules before submitting; accurately distinguish
+your original work from assisted changes. Self-ratings and authorship require your review.
+
+## Verified implementation evidence
+
+- Practical tasks: [verification record](docs/VERIFICATION.md), including a real HTTP
+  demonstration, rollback tests and repeat-import results.
+- FaceFare PR branch: [database implementation](https://github.com/srivisnuA/FaceFare/blob/quality-hardening-2026-10/database/models.py),
+  [transaction tests](https://github.com/srivisnuA/FaceFare/blob/quality-hardening-2026-10/tests/test_database_transactions.py),
+  [trip integration tests](https://github.com/srivisnuA/FaceFare/blob/quality-hardening-2026-10/tests/test_app_flow.py).
+  Evidence includes transactional wallet ledger writes, integer-cent arithmetic,
+  concurrency tests and atomic identity/balance edits. These are draft-branch links;
+  use reviewed commit permalinks when selecting final evidence.
+- ChestXpert PR branch: [synthetic inference/API tests](https://github.com/srivisnuA/ChestXpert-Explainable-Chest-X-Ray-AI/blob/quality-hardening-2026-10/tests/test_reliability.py).
+  These verify engineering behavior, not clinical model quality. No new training run
+  or medical performance metric was produced in this review.
 
 ## Assignment 1 — Q4: most complex Python code
 

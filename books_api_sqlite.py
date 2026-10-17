@@ -1,6 +1,9 @@
 """Fetch books from Open Library, persist them to SQLite, and display saved rows."""
 from __future__ import annotations
 import argparse
+from contextlib import closing
+import hashlib
+import json
 import sqlite3
 from pathlib import Path
 from typing import Any
@@ -9,12 +12,12 @@ import requests
 OPEN_LIBRARY_URL = "https://openlibrary.org/search.json"
 
 def fetch_books(query: str, limit: int = 10, timeout: int = 15) -> list[dict[str, Any]]:
-    if not query.strip():
+    if not isinstance(query, str) or not query.strip():
         raise ValueError("query must not be empty")
-    if not 1 <= limit <= 100:
+    if isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= 100:
         raise ValueError("limit must be between 1 and 100")
     response = requests.get(OPEN_LIBRARY_URL, params={
-        "q": query, "limit": limit,
+        "q": query.strip(), "limit": limit,
         "fields": "key,title,author_name,first_publish_year"
     }, timeout=timeout)
     response.raise_for_status()
@@ -22,7 +25,7 @@ def fetch_books(query: str, limit: int = 10, timeout: int = 15) -> list[dict[str
     if not isinstance(payload, dict) or not isinstance(payload.get("docs"), list):
         raise ValueError("Unexpected books API response format")
     books = []
-    for doc in payload["docs"]:
+    for doc in payload["docs"][:limit]:
         if not isinstance(doc, dict):
             continue
         raw_title = doc.get("title")
@@ -37,7 +40,10 @@ def fetch_books(query: str, limit: int = 10, timeout: int = 15) -> list[dict[str
         if isinstance(year, bool) or not isinstance(year, int) or not 0 < year <= 9999:
             year = None
         raw_key = doc.get("key")
-        book_key = raw_key.strip() if isinstance(raw_key, str) and raw_key.strip() else f"title:{title.casefold()}"
+        # Title alone conflates unrelated works with the same name.
+        identity = json.dumps([title.casefold(), sorted(a.casefold() for a in authors), year])
+        book_key = (raw_key.strip() if isinstance(raw_key, str) and raw_key.strip()
+                    else "fallback:" + hashlib.sha256(identity.encode("utf-8")).hexdigest())
         books.append({
             "book_key": book_key,
             "title": title,
@@ -47,7 +53,7 @@ def fetch_books(query: str, limit: int = 10, timeout: int = 15) -> list[dict[str
     return books
 
 def initialize_database(db_path: str | Path) -> None:
-    with sqlite3.connect(db_path) as conn:
+    with closing(sqlite3.connect(db_path)) as conn, conn:
         conn.execute("""
             CREATE TABLE IF NOT EXISTS books (
                 book_key TEXT PRIMARY KEY,
@@ -60,7 +66,7 @@ def initialize_database(db_path: str | Path) -> None:
 
 def save_books(db_path: str | Path, books: list[dict[str, Any]]) -> int:
     initialize_database(db_path)
-    with sqlite3.connect(db_path) as conn:
+    with closing(sqlite3.connect(db_path)) as conn, conn:
         conn.executemany("""
             INSERT INTO books (book_key, title, author, publication_year)
             VALUES (:book_key, :title, :author, :publication_year)
@@ -72,11 +78,13 @@ def save_books(db_path: str | Path, books: list[dict[str, Any]]) -> int:
     return len(books)
 
 def read_books(db_path: str | Path, limit: int = 20) -> list[tuple]:
+    if isinstance(limit, bool) or not isinstance(limit, int) or limit < 1:
+        raise ValueError("limit must be a positive integer")
     initialize_database(db_path)
-    with sqlite3.connect(db_path) as conn:
+    with closing(sqlite3.connect(db_path)) as conn, conn:
         return conn.execute("""
             SELECT title, author, publication_year FROM books
-            ORDER BY title COLLATE NOCASE LIMIT ?
+            ORDER BY title COLLATE NOCASE, book_key LIMIT ?
         """, (limit,)).fetchall()
 
 def main() -> int:

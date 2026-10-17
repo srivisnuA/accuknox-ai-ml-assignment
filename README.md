@@ -4,6 +4,23 @@
 
 This repository contains three practical Python exercises demonstrating REST API retrieval, SQLite persistence, data visualization, and CSV import.
 
+## Verified demonstration
+
+```bash
+python -m unittest discover -s tests -v
+python demo.py                 # local HTTP API + CSV import and repeat import
+python demo.py --live-books    # also fetch and upsert real Open Library records
+```
+
+The demo uses a temporary local HTTP server on an available port and stops it when done.
+Results and charts go to `outputs/demo/`. Use a fresh `--output` directory to reproduce
+first-import counts. On 18 October 2026, Python 3.10 on Windows passed **21 tests**;
+the live demo retrieved five books, produced an **81.20** mean, imported four users,
+skipped one invalid email, then updated the same four users on a repeat run.
+See [verification details](docs/VERIFICATION.md).
+
+![Student score demonstration](docs/student_scores.png)
+
 ## Tasks
 
 1. **Books API → SQLite** — `books_api_sqlite.py` fetches book search results from Open Library, stores the title/author/publication year in SQLite, and displays saved records.
@@ -19,6 +36,15 @@ This repository contains three practical Python exercises demonstrating REST API
 - Scores are percentages from 0 through 100. Invalid scores are rejected.
 - SQLite is used for this local exercise. SQL values are parameterized, and unique keys prevent duplicate records.
 - CSV columns are `name,email` (case-insensitive). Invalid rows are skipped with a message.
+- Duplicate or blank headers are errors. Malformed quoting aborts and rolls back the
+  import; wrong column counts and invalid individual rows are skipped. Extra named
+  columns are accepted. UTF-8 BOMs are supported.
+- A missing book ID uses a deterministic title/author/year hash. This is a fallback,
+  not an authoritative catalog identifier; metadata changes can create a new record.
+- Books without a usable title are skipped. Missing authors become `Unknown`; invalid
+  first-publication years become SQL NULL. An empty books result is valid. Empty student
+  data is an error because its average is undefined.
+- Database connections close explicitly after commit or rollback, including on Windows.
 
 ## Setup
 

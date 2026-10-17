@@ -1,0 +1,61 @@
+{
+  "student_source": "Fictional local HTTP API",
+  "student_count": 5,
+  "average_score": 81.2,
+  "csv_first_run": {
+    "inserted": 4,
+    "updated": 0,
+    "skipped": 1
+  },
+  "csv_repeat_run": {
+    "inserted": 0,
+    "updated": 4,
+    "skipped": 1
+  },
+  "users": [
+    [
+      "Asha Raman",
+      "asha@example.com"
+    ],
+    [
+      "Bala Kumar",
+      "bala@example.com"
+    ],
+    [
+      "Charan Das",
+      "charan@example.com"
+    ],
+    [
+      "Divya Nair",
+      "divya@example.com"
+    ]
+  ],
+  "books_source": "Live Open Library Search API",
+  "books": [
+    [
+      "Black Hat Python",
+      "Justin Seitz, Tim Arnold",
+      2014
+    ],
+    [
+      "Core Python programming",
+      "Wesley Chun",
+      2006
+    ],
+    [
+      "Core Python Programming",
+      "R. Nageswara Rao",
+      2016
+    ],
+    [
+      "Python Programming",
+      "Reema Thareja",
+      2019
+    ],
+    [
+      "Python programming",
+      "John M. Zelle",
+      2003
+    ]
+  ]
+}

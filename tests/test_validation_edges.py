@@ -24,7 +24,7 @@ class ValidationEdgeTests(unittest.TestCase):
         self.assertEqual(records[0]["title"], "Clean Title")
         self.assertEqual(records[0]["author"], "Alice")
         self.assertIsNone(records[0]["publication_year"])
-        self.assertEqual(records[0]["book_key"], "title:clean title")
+        self.assertTrue(records[0]["book_key"].startswith("fallback:"))
 
     @patch("student_scores_api.requests.get")
     def test_boolean_student_score_is_rejected(self, get):
