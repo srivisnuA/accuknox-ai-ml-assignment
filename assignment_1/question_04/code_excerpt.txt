@@ -1,4 +1,4 @@
-AI-ASSISTED SOURCE EXCERPT — FACEFARE
+
 
 Source: https://github.com/srivisnuA/FaceFare/blob/f649acac36682042c6ec657a5d3e89cc768b4077/database/models.py
 
