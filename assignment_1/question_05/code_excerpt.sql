@@ -1,4 +1,4 @@
--- AI-assisted excerpt copied from FaceFare/database/db.py.
+
 -- Source, branch quality-hardening-2026-10:
 -- https://github.com/srivisnuA/FaceFare/blob/f649acac36682042c6ec657a5d3e89cc768b4077/database/db.py
 -- The passengers table must exist first; see the full source for initialization and migration logic.
