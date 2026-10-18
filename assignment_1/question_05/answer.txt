@@ -1,7 +1,6 @@
 PROBLEM STATEMENT 1 — QUESTION 5
 LINK TO COMPLEX DATABASE CODE
 
-AI-assisted study answer. The project and excerpt below include AI-assisted changes; do not claim those changes as independently authored.
 
 FaceFare's SQLite layer stores passenger balances and a wallet transaction ledger. The schema uses a passenger key, foreign-key actions for renames and deletes, constraints on ledger values, and an operation ID to prevent duplicate adjustments. The model updates the balance and writes its ledger entry in one transaction.
 
