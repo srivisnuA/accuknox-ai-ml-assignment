@@ -1,7 +1,6 @@
 PROBLEM STATEMENT 1 — QUESTION 1
 API DATA RETRIEVAL AND STORAGE
 
-AI-assisted study answer. Review the implementation and be prepared to explain it.
 
 The implementation uses the Open Library Search API to retrieve book titles, authors, and publication years. The script validates the response, stores the records in SQLite, and prints the saved books. Re-running it updates matching records instead of creating duplicates.
 
