@@ -1,7 +1,6 @@
 PROBLEM STATEMENT 1 — QUESTION 3
 CSV DATA IMPORT TO A DATABASE
 
-AI-assisted study answer. Review the implementation and be prepared to explain it.
 
 The script reads name and email columns from a CSV file, validates each row, and imports valid users into SQLite. It updates a record when the email already exists and reports rows it skips.
 
