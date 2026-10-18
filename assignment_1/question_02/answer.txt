@@ -1,7 +1,7 @@
 PROBLEM STATEMENT 1 — QUESTION 2
 STUDENT SCORES AND VISUALIZATION
 
-AI-assisted study answer. Review the implementation and be prepared to explain it.
+
 
 The script fetches student names and scores from an HTTP API, validates the data, calculates the average, and saves a bar chart. The assignment does not specify a student-score API, so a small local API is included with sample scores to make the example repeatable.
 
