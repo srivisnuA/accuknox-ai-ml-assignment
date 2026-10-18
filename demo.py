@@ -5,10 +5,10 @@ from pathlib import Path
 import threading
 
 from werkzeug.serving import make_server
-from books_api_sqlite import fetch_books, read_books, save_books
-from csv_users_to_sqlite import import_users, list_users
-from demo_api import app
-from student_scores_api import create_chart, fetch_students
+from assignment_1.question_01.books_api_sqlite import fetch_books, read_books, save_books
+from assignment_1.question_03.csv_users_to_sqlite import import_users, list_users
+from assignment_1.question_02.demo_api import app
+from assignment_1.question_02.student_scores_api import create_chart, fetch_students
 
 
 def main():
@@ -31,8 +31,8 @@ def main():
     result = {
         "student_source": "Fictional local HTTP API",
         "student_count": len(students), "average_score": average,
-        "csv_first_run": import_users(Path(__file__).parent / "data/users.csv", db),
-        "csv_repeat_run": import_users(Path(__file__).parent / "data/users.csv", db),
+        "csv_first_run": import_users(Path(__file__).parent / "assignment_1/question_03/data/users.csv", db),
+        "csv_repeat_run": import_users(Path(__file__).parent / "assignment_1/question_03/data/users.csv", db),
         "users": list_users(db),
     }
     if args.live_books:

@@ -2,6 +2,12 @@
 
 Executed on 18 October 2026 with CPython 3.10 on Windows.
 
+After reorganizing the repository into eight question folders, all 21 tests passed
+again. The local HTTP/CSV demo reproduced the 81.20 mean, four initial inserts,
+one skipped row, and four updates on repeat import. All eight individual answer
+files and the README/index links were checked. The module imports, CLI paths,
+and sample CSV location now follow the numbered question layout.
+
 | Check | Result |
 |---|---|
 | `python -m unittest discover -s tests -v` | 21 tests passed |

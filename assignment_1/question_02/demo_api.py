@@ -1,4 +1,4 @@
-"""Local sample API for the student-score task. Run: python demo_api.py"""
+"""Local sample API for the student-score task. Run: python -m assignment_1.question_02.demo_api"""
 from flask import Flask, jsonify
 app = Flask(__name__)
 STUDENTS = [

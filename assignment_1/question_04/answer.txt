@@ -1,0 +1,12 @@
+PROBLEM STATEMENT 1 — QUESTION 4
+LINK TO COMPLEX PYTHON CODE
+
+AI-assisted study answer. The project and excerpt below include AI-assisted changes; do not claim those changes as independently authored.
+
+FaceFare is a public-transport fare collection prototype that combines a Flask/Socket.IO app, trip and fare handling, facial-recognition integration, and wallet operations. The linked wallet function validates an adjustment, performs it in a SQLite transaction, prevents a retry from charging twice when an operation ID is supplied, and records the change in a ledger.
+
+Repository: https://github.com/srivisnuA/FaceFare/tree/f649acac36682042c6ec657a5d3e89cc768b4077
+Source file: database/models.py
+Local excerpt: code_excerpt.txt
+
+Full Python source: https://github.com/srivisnuA/FaceFare/blob/f649acac36682042c6ec657a5d3e89cc768b4077/database/models.py

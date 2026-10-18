@@ -1,0 +1,37 @@
+AI-ASSISTED SOURCE EXCERPT — FACEFARE
+
+Source: https://github.com/srivisnuA/FaceFare/blob/f649acac36682042c6ec657a5d3e89cc768b4077/database/models.py
+
+This is an exact function excerpt. Its imports and helper functions live in the source repository; it is not a standalone program.
+
+def change_balance(pid, delta, operation_id=None):
+    """Serialize adjustments; optional operation IDs prevent retry charges.
+
+    Insufficient funds returns None without writing. Reusing an operation ID for
+    different input is an error. A successful retry returns the current balance.
+    """
+    _pid(pid)
+    cents = to_cents(delta, allow_negative=True)
+    if cents == 0:
+        raise ValueError("delta must be non-zero")
+    if operation_id is not None and (not isinstance(operation_id, str) or
+                                   not operation_id.strip() or len(operation_id) > 128):
+        raise ValueError("operation_id must be 1 to 128 characters")
+    with closing(get_connection()) as conn, conn:
+        conn.execute("BEGIN IMMEDIATE")
+        current = to_cents(_row(conn, pid)["balance"])
+        if operation_id is not None:
+            previous = conn.execute("SELECT pid, delta_cents FROM wallet_transactions WHERE operation_id = ?",
+                                    (operation_id,)).fetchone()
+            if previous:
+                if previous["pid"] != pid or previous["delta_cents"] != cents:
+                    raise ValueError("operation_id already used for a different adjustment")
+                return from_cents(current)
+        balance = current + cents
+        if balance < 0:
+            return None
+        value = from_cents(balance)
+        to_cents(value)
+        conn.execute("UPDATE passengers SET balance = ? WHERE pid = ?", (value, pid))
+        _record(conn, pid, cents, balance, "adjustment", operation_id)
+        return value

@@ -15,15 +15,15 @@ import matplotlib.pyplot as plt
 import requests
 from werkzeug.serving import make_server
 
-from books_api_sqlite import fetch_books, read_books, save_books
-from csv_users_to_sqlite import import_users, list_users
-from demo_api import app
-from student_scores_api import create_chart, fetch_students, validate_students
+from assignment_1.question_01.books_api_sqlite import fetch_books, read_books, save_books
+from assignment_1.question_03.csv_users_to_sqlite import import_users, list_users
+from assignment_1.question_02.demo_api import app
+from assignment_1.question_02.student_scores_api import create_chart, fetch_students, validate_students
 
 
 class ReliabilityTests(unittest.TestCase):
     def test_bad_book_arguments_never_make_network_requests(self):
-        with patch("books_api_sqlite.requests.get") as get:
+        with patch("assignment_1.question_01.books_api_sqlite.requests.get") as get:
             for query, limit in [(None, 1), (" ", 1), ("q", True), ("q", 1.5), ("q", 101)]:
                 with self.subTest(query=query, limit=limit), self.assertRaises(ValueError):
                     fetch_books(query, limit)
@@ -129,7 +129,7 @@ class ReliabilityTests(unittest.TestCase):
             with tempfile.TemporaryDirectory() as tmp:
                 chart, summary = Path(tmp) / "chart.png", Path(tmp) / "summary.json"
                 result = subprocess.run([
-                    sys.executable, str(Path(__file__).resolve().parents[1] / "student_scores_api.py"),
+                    sys.executable, str(Path(__file__).resolve().parents[1] / "assignment_1/question_02/student_scores_api.py"),
                     "--api-url", f"http://127.0.0.1:{server.server_port}/students",
                     "--chart", str(chart), "--json-output", str(summary),
                 ], capture_output=True, text=True, timeout=30)

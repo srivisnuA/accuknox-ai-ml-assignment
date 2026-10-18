@@ -1,0 +1,6 @@
+ASSIGNMENT 2 — QUESTION 2
+HIGH-LEVEL LLM CHATBOT ARCHITECTURE
+
+AI-assisted study answer. Review the architecture and be prepared to explain each component.
+
+A user sends a message through an app, which checks access and validates the request. The backend can retrieve relevant, permission-checked documents and give the question and useful context to an LLM. If a tool is needed, the backend validates and runs that request. The app returns the answer, with source links when available; monitoring tracks errors and answer quality while limiting unnecessary private data.

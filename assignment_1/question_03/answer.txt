@@ -1,0 +1,12 @@
+PROBLEM STATEMENT 1 — QUESTION 3
+CSV DATA IMPORT TO A DATABASE
+
+AI-assisted study answer. Review the implementation and be prepared to explain it.
+
+The script reads name and email columns from a CSV file, validates each row, and imports valid users into SQLite. It updates a record when the email already exists and reports rows it skips.
+
+Implementation: csv_users_to_sqlite.py
+Sample input: data/users.csv (in this question folder)
+Run: python -m assignment_1.question_03.csv_users_to_sqlite --csv assignment_1/question_03/data/users.csv --db users.db
+
+Run the commands above from the repository root. Implementation files are in this question folder.

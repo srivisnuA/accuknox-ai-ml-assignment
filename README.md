@@ -1,129 +1,89 @@
-# AccuKnox AI/ML Assignment — Python + SQLite
+# AccuKnox AI/ML Assignment
 
-**Author:** Srivisnu A
+**Repository owner:** Srivisnu A
 
-This repository contains three practical Python exercises demonstrating REST API retrieval, SQLite persistence, data visualization, and CSV import.
+Each question has its own numbered folder and individual `answer.txt`. Practical code and sample inputs are stored with their question. Shared dependencies, tests, and verification records remain at repository level.
 
-## Verified demonstration
+These materials include AI-assisted work. The provided problem statement prohibits copying and ChatGPT use; these files must not be represented as independently authored work.
 
-```bash
-python -m unittest discover -s tests -v
-python demo.py                 # local HTTP API + CSV import and repeat import
-python demo.py --live-books    # also fetch and upsert real Open Library records
-```
+## Problem Statement 1 / Assignment 1
 
-The demo uses a temporary local HTTP server on an available port and stops it when done.
-Results and charts go to `outputs/demo/`. Use a fresh `--output` directory to reproduce
-first-import counts. On 18 October 2026, Python 3.10 on Windows passed **21 tests**;
-the live demo retrieved five books, produced an **81.20** mean, imported four users,
-skipped one invalid email, then updated the same four users on a repeat run.
-See [verification details](docs/VERIFICATION.md).
+| Question | Topic | Answer | Implementation or excerpt |
+|---|---|---|---|
+| 1 | API data retrieval and SQLite storage | [answer.txt](assignment_1/question_01/answer.txt) | [books_api_sqlite.py](assignment_1/question_01/books_api_sqlite.py) |
+| 2 | Student scores, average, and bar chart | [answer.txt](assignment_1/question_02/answer.txt) | [student_scores_api.py](assignment_1/question_02/student_scores_api.py), [sample API](assignment_1/question_02/demo_api.py), [chart](assignment_1/question_02/student_scores.png) |
+| 3 | CSV import to SQLite | [answer.txt](assignment_1/question_03/answer.txt) | [csv_users_to_sqlite.py](assignment_1/question_03/csv_users_to_sqlite.py), [sample CSV](assignment_1/question_03/data/users.csv) |
+| 4 | Complex Python code | [answer.txt](assignment_1/question_04/answer.txt) | [FaceFare function excerpt](assignment_1/question_04/code_excerpt.txt) |
+| 5 | Complex database code | [answer.txt](assignment_1/question_05/answer.txt) | [FaceFare schema excerpt](assignment_1/question_05/code_excerpt.sql) |
 
-![Student score demonstration](docs/student_scores.png)
+## Assignment 2
 
-## Tasks
+| Question | Topic | Answer |
+|---|---|---|
+| 1 | LLM, Deep Learning, AI, and ML self-rating | [answer.txt](assignment_2/question_01/answer.txt) |
+| 2 | High-level LLM chatbot architecture | [answer.txt](assignment_2/question_02/answer.txt) |
+| 3 | Vector databases and a hypothetical database choice | [answer.txt](assignment_2/question_03/answer.txt) |
 
-1. **Books API → SQLite** — `books_api_sqlite.py` fetches book search results from Open Library, stores the title/author/publication year in SQLite, and displays saved records.
-2. **Student scores → average and bar chart** — `student_scores_api.py` retrieves scores from an HTTP endpoint, validates them, calculates the mean, saves a chart, and writes a JSON summary.
-3. **CSV → SQLite** — `csv_users_to_sqlite.py` validates a CSV file and imports users, updating duplicate email addresses and reporting invalid rows.
-4. **Local sample API** — `demo_api.py` serves fictional student scores so the chart example can run reproducibly without an external student-data service.
-5. **Tests** — `tests/test_assignment.py` exercises API parsing (with mocked requests), database persistence, chart creation, and CSV duplicate handling.
-
-## Assumptions
-
-- Open Library Search API is used for books because it supplies title, author names, and first publication year.
-- The assignment does not specify a student-score API, so `demo_api.py` provides a small local Flask API; the consumer accepts a configurable URL.
-- Scores are percentages from 0 through 100. Invalid scores are rejected.
-- SQLite is used for this local exercise. SQL values are parameterized, and unique keys prevent duplicate records.
-- CSV columns are `name,email` (case-insensitive). Invalid rows are skipped with a message.
-- Duplicate or blank headers are errors. Malformed quoting aborts and rolls back the
-  import; wrong column counts and invalid individual rows are skipped. Extra named
-  columns are accepted. UTF-8 BOMs are supported.
-- A missing book ID uses a deterministic title/author/year hash. This is a fallback,
-  not an authoritative catalog identifier; metadata changes can create a new record.
-- Books without a usable title are skipped. Missing authors become `Unknown`; invalid
-  first-publication years become SQL NULL. An empty books result is valid. Empty student
-  data is an error because its average is undefined.
-- Database connections close explicitly after commit or rollback, including on Windows.
+The selected self-rating is **B — can code under supervision** for all four areas. Each theory response is in its own text file.
 
 ## Setup
 
-Python 3.10+ recommended.
+Use Python 3.10 or newer. Run commands from the repository root:
 
-```bash
+```powershell
 python -m venv .venv
-# Windows PowerShell: .venv\Scripts\Activate.ps1
-# macOS/Linux: source .venv/bin/activate
+.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
 
-## Run task 1 — Books API
+On macOS/Linux, activate with `source .venv/bin/activate`.
 
-Requires internet access.
+## Run Assignment 1
+
+Question 1 — requires internet access:
 
 ```bash
-python books_api_sqlite.py --query "python programming" --limit 10 --db books.db
+python -m assignment_1.question_01.books_api_sqlite --query "python programming" --limit 10 --db books.db
 ```
 
-The database is created automatically. Re-running updates existing book keys.
-
-## Run task 2 — Student scores
-
-Terminal 1:
+Question 2 — start the sample API in one terminal:
 
 ```bash
-python demo_api.py
+python -m assignment_1.question_02.demo_api
 ```
 
-Terminal 2:
+Then run the consumer in a second terminal:
 
 ```bash
-python student_scores_api.py
+python -m assignment_1.question_02.student_scores_api
 ```
 
-Sample scores are 88, 76, 92, 81, and 69; the average is **81.20**. Outputs are written to `outputs/student_scores.png` and `outputs/student_scores_summary.json`.
+The five sample scores average **81.20**. The chart and JSON summary are written to `outputs/`. To use another service, pass `--api-url http://localhost:8000/students`. Expected JSON is a list of `{"student":"Asha","score":88}` records, optionally wrapped in a `students` property.
 
-To use a different API:
+Question 3 — the default sample CSV is resolved relative to its script:
 
 ```bash
-python student_scores_api.py --api-url http://localhost:8000/students
+python -m assignment_1.question_03.csv_users_to_sqlite --db users.db
 ```
 
-Expected JSON format is either `[{"student":"Asha","score":88}]` or `{"students":[{"student":"Asha","score":88}]}`.
+Use `--csv path/to/users.csv` for another input. Questions 4 and 5 contain source links and excerpts for inspection; the excerpts depend on the full FaceFare project.
 
-## Run task 3 — CSV import
+## Assumptions and behavior
+
+- Open Library supplies book search data because the question specifies no API. Missing authors become `Unknown`; invalid years become SQL NULL; records without a usable title are skipped.
+- Book keys prevent duplicate imports. If a key is missing, a title/author/year hash supplies a fallback; changed metadata may produce a different fallback key.
+- The student API uses fictional data because no endpoint is provided. Scores must be finite numbers between 0 and 100. Empty datasets and invalid records are rejected.
+- CSV columns must include `name,email` (case-insensitive). UTF-8 BOMs and extra named columns are supported. Invalid rows are skipped; duplicate emails update existing users.
+- Duplicate/blank CSV headers are errors. Malformed quoting aborts and rolls back the import. Database writes use parameterized SQL, transactions, and explicit connection closing.
+
+## Demonstration and verification
 
 ```bash
-python csv_users_to_sqlite.py --csv data/users.csv --db users.db
-```
-
-The sample CSV includes an intentionally invalid email to demonstrate validation.
-
-## Run tests
-
-```bash
+python demo.py
+python demo.py --live-books
 python -m unittest discover -s tests -v
 ```
 
-The tests mock API requests, so they do not require internet access.
+The demo starts and stops its own local HTTP API, calculates the mean and chart, and imports the CSV twice. Results go to `outputs/demo/`; use `--output` with a fresh directory to reproduce first-import counts. `--live-books` also exercises Open Library.
 
-## Design choices
-
-- HTTP calls use timeouts and raise errors for unsuccessful responses.
-- Database writes use context managers and parameterized SQL.
-- Unique identifiers and upserts make repeated runs safe against duplicate inserts.
-- Matplotlib's non-interactive backend saves charts on headless machines.
-- For production, consider structured logging, retry/backoff, schema migrations, pagination/rate-limit handling, and more comprehensive validation.
-
-## Files
-
-```text
-.
-├── books_api_sqlite.py
-├── student_scores_api.py
-├── csv_users_to_sqlite.py
-├── demo_api.py
-├── requirements.txt
-├── data/users.csv
-└── tests/test_assignment.py
-```
+See [verification records](docs/VERIFICATION.md) and [recorded demo results](docs/demo-results.json). Tests cover malformed API responses, rollback behavior, repeated imports, validation failures, and a real local HTTP CLI run.

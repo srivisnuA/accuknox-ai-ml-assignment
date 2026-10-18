@@ -1,0 +1,6 @@
+ASSIGNMENT 2 — QUESTION 3
+VECTOR DATABASES
+
+AI-assisted study answer. Review the choice and be prepared to discuss its tradeoffs.
+
+A vector database stores numeric embeddings of text or other data and finds items close to a query embedding. For a company help desk, I would start with PostgreSQL plus pgvector if the company already uses PostgreSQL, since document permissions and metadata can stay alongside the vectors. I would compare retrieval quality, speed, filtering, and cost on real queries before deciding; similarity alone does not prove an answer is correct.

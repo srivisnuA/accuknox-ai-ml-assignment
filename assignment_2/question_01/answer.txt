@@ -1,0 +1,9 @@
+ASSIGNMENT 2 — QUESTION 1
+SELF-RATING
+
+AI-assisted study answer. The selected rating is the one requested by the user; confirm it accurately describes your current ability in each area.
+
+LLM: B — can code under supervision.
+Deep Learning: B — can code under supervision.
+AI: B — can code under supervision.
+ML: B — can code under supervision.

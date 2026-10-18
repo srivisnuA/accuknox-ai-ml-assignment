@@ -1,0 +1,12 @@
+PROBLEM STATEMENT 1 — QUESTION 1
+API DATA RETRIEVAL AND STORAGE
+
+AI-assisted study answer. Review the implementation and be prepared to explain it.
+
+The implementation uses the Open Library Search API to retrieve book titles, authors, and publication years. The script validates the response, stores the records in SQLite, and prints the saved books. Re-running it updates matching records instead of creating duplicates.
+
+Implementation: books_api_sqlite.py
+Run: python -m assignment_1.question_01.books_api_sqlite --query "python programming" --limit 10 --db books.db
+Assumption: Open Library is used because the question does not name a books API.
+
+Run the commands above from the repository root. Implementation files are in this question folder.

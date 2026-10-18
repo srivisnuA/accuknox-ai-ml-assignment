@@ -2,9 +2,9 @@ import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import Mock, patch
-from books_api_sqlite import fetch_books, read_books, save_books
-from student_scores_api import create_chart, fetch_students
-from csv_users_to_sqlite import import_users, list_users
+from assignment_1.question_01.books_api_sqlite import fetch_books, read_books, save_books
+from assignment_1.question_02.student_scores_api import create_chart, fetch_students
+from assignment_1.question_03.csv_users_to_sqlite import import_users, list_users
 
 
 
@@ -16,7 +16,7 @@ class AssignmentTests(unittest.TestCase):
     def tearDown(self):
         self.temp.cleanup()
 
-    @patch("books_api_sqlite.requests.get")
+    @patch("assignment_1.question_01.books_api_sqlite.requests.get")
     def test_book_api_and_sqlite(self, mock_get):
         response = Mock()
         response.json.return_value = {"docs": [{"key": "/works/OL1W", "title": "Example Book",
@@ -29,7 +29,7 @@ class AssignmentTests(unittest.TestCase):
         self.assertEqual(save_books(db, books), 1)
         self.assertEqual(read_books(db)[0][0], "Example Book")
 
-    @patch("student_scores_api.requests.get")
+    @patch("assignment_1.question_02.student_scores_api.requests.get")
     def test_student_average_and_chart(self, mock_get):
         response = Mock()
         response.raise_for_status = Mock()
@@ -40,7 +40,7 @@ class AssignmentTests(unittest.TestCase):
         chart = self.root / "scores.png"
         self.assertEqual(create_chart(students, chart), 90)
         self.assertTrue(chart.exists())
-    @patch("student_scores_api.requests.get")
+    @patch("assignment_1.question_02.student_scores_api.requests.get")
     def test_invalid_student_scores(self, mock_get):
         response = Mock()
         response.json.return_value = {"students": [{"student": "A", "score": "nan"}]}
@@ -48,7 +48,7 @@ class AssignmentTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             fetch_students("http://example.test/students")
 
-    @patch("books_api_sqlite.requests.get")
+    @patch("assignment_1.question_01.books_api_sqlite.requests.get")
     def test_invalid_books_payload(self, mock_get):
         response = Mock()
         response.json.return_value = {"docs": "not-a-list"}

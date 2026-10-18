@@ -4,13 +4,13 @@ import unittest
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-from books_api_sqlite import fetch_books
-from student_scores_api import fetch_students
-from csv_users_to_sqlite import import_users
+from assignment_1.question_01.books_api_sqlite import fetch_books
+from assignment_1.question_02.student_scores_api import fetch_students
+from assignment_1.question_03.csv_users_to_sqlite import import_users
 
 
 class ValidationEdgeTests(unittest.TestCase):
-    @patch("books_api_sqlite.requests.get")
+    @patch("assignment_1.question_01.books_api_sqlite.requests.get")
     def test_book_fields_with_unexpected_types_are_sanitized(self, get):
         response = Mock()
         response.json.return_value = {"docs": [
@@ -26,7 +26,7 @@ class ValidationEdgeTests(unittest.TestCase):
         self.assertIsNone(records[0]["publication_year"])
         self.assertTrue(records[0]["book_key"].startswith("fallback:"))
 
-    @patch("student_scores_api.requests.get")
+    @patch("assignment_1.question_02.student_scores_api.requests.get")
     def test_boolean_student_score_is_rejected(self, get):
         response = Mock()
         response.json.return_value = {"students": [{"student": "A", "score": True}]}

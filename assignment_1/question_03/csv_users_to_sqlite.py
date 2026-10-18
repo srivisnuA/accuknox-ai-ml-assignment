@@ -70,7 +70,7 @@ def list_users(db_path: str | Path) -> list[tuple]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--csv", default="data/users.csv")
+    parser.add_argument("--csv", default=str(Path(__file__).parent / "data/users.csv"))
     parser.add_argument("--db", default="users.db")
     args = parser.parse_args()
     try:
